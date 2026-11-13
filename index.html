@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nascimento Solutions | Suíte IA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .chat-scroll::-webkit-scrollbar { width: 5px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg">NS</div>
+      <div>
+        <h1 class="font-bold text-white text-sm sm:text-base">Nascimento Solutions • Suíte IA</h1>
+        <p class="text-xs text-slate-400">Status: <span id="status-backend" class="text-amber-400 font-medium">Conectando ao Render...</span></p>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="mudarAba('chat')" id="tab-chat" class="text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white">Chat SDR</button>
+      <button onclick="mudarAba('crm')" id="tab-crm" class="text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Pipeline CRM</button>
+    </div>
+  </header>
+
+  <!-- CHAT -->
+  <main id="view-chat" class="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-65px)]">
+    <div class="flex-1 flex flex-col bg-slate-950 border-r border-slate-800">
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 chat-scroll"></div>
+      
+      <form id="chat-form" onsubmit="enviarMensagem(event)" class="p-4 bg-slate-900 border-t border-slate-800 flex gap-3">
+        <input type="text" id="user-input" placeholder="Pergunte sobre sistemas, automações ou IA..." class="flex-1 bg-slate-800 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-indigo-500" autocomplete="off">
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-3 rounded-xl transition">Enviar</button>
+      </form>
+    </div>
+
+    <!-- TELEMETRIA -->
+    <div class="w-full lg:w-[380px] bg-slate-900 p-5 flex flex-col gap-4 overflow-y-auto">
+      <h2 class="text-sm font-bold text-white uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
+      <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-4 space-y-2 text-xs">
+        <div class="flex justify-between"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">—</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Contato:</span><span id="crm-contato" class="font-medium text-emerald-400">—</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Objetivo:</span><span id="crm-objetivo" class="font-medium text-white text-right max-w-[170px]">—</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Urgência:</span><span id="crm-urgencia" class="font-medium text-white">—</span></div>
+      </div>
+      <div class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto" id="tool-logs">
+        <div class="text-slate-500">[SYSTEM] Inicializado.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- CRM KANBAN -->
+  <main id="view-crm" class="hidden flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4"><h3 class="font-semibold text-sm text-slate-300 mb-3">Em Triagem</h3><div id="col-novos" class="space-y-2"></div></div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4"><h3 class="font-semibold text-sm text-amber-300 mb-3">Nutrição</h3><div id="col-nutricao" class="space-y-2"></div></div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4"><h3 class="font-semibold text-sm text-emerald-300 mb-3">Reunião Agendada</h3><div id="col-agendados" class="space-y-2"></div></div>
+  </main>
+
+  <script>
+    const BACKEND_URL = 'https://nascimento-sdr-backend.onrender.com';
+    let sessionId = 'sessao-' + Date.now();
+    let leadData = { nome: '', contato: '', objetivo: '', urgencia: '', score: 15 };
+    let historico = [];
+
+    function mudarAba(aba) {
+      if (aba === 'chat') {
+        document.getElementById('view-chat').classList.remove('hidden');
+        document.getElementById('view-crm').classList.add('hidden');
+      } else {
+        document.getElementById('view-chat').classList.add('hidden');
+        document.getElementById('view-crm').classList.remove('hidden');
+        carregarCRM();
+      }
+    }
+
+    function adicionarLog(tipo, msg) {
+      const logs = document.getElementById('tool-logs');
+      logs.innerHTML += `<div class="text-slate-400"><strong>[${tipo}]</strong> ${msg}</div>`;
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function renderizarChat() {
+      const box = document.getElementById('chat-messages');
+      box.innerHTML = '';
+      historico.forEach(m => {
+        box.innerHTML += `<div class="flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}"><div class="${m.sender === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-100'} rounded-2xl px-4 py-3 max-w-[80%] text-sm">${m.text}</div></div>`;
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function enviarMensagem(e) {
+      e.preventDefault();
+      const input = document.getElementById('user-input');
+      const texto = input.value.trim();
+      if (!texto) return;
+      input.value = '';
+
+      historico.push({ sender: 'user', text: texto });
+      renderizarChat();
+
+      try {
+        const resp = await fetch(`${BACKEND_URL}/api/agent/sdr`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, message: texto })
+        });
+
+        if (!resp.ok) throw new Error('Erro no servidor');
+        const data = await resp.json();
+
+        if (data.leadData) {
+          leadData = { ...leadData, ...data.leadData };
+          document.getElementById('crm-nome').textContent = leadData.nome || '—';
+          document.getElementById('crm-contato').textContent = leadData.contato || '—';
+          document.getElementById('crm-objetivo').textContent = leadData.objetivo || '—';
+          document.getElementById('crm-urgencia').textContent = leadData.urgencia || '—';
+        }
+
+        if (data.logs) data.logs.forEach(l => adicionarLog(l.tipo, l.mensagem));
+
+        const respostaFormatada = (data.reply || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        historico.push({ sender: 'agent', text: respostaFormatada });
+        renderizarChat();
+
+      } catch (err) {
+        adicionarLog('GUARDRAIL', 'Tentando religar com o Render...');
+        setTimeout(() => enviarMensagem(e), 3000);
+      }
+    }
+
+    async function carregarCRM() {
+      try {
+        const resp = await fetch(`${BACKEND_URL}/api/leads`);
+        const data = await resp.json();
+        const leads = data.leads || [];
+        document.getElementById('col-novos').innerHTML = leads.map(l => `<div class="bg-slate-950 p-3 rounded-lg text-xs"><b>${l.nome || 'Lead'}</b><br>${l.objetivo || ''}</div>`).join('');
+      } catch (e) {}
+    }
+
+    async function testarConexao() {
+      const badge = document.getElementById('status-backend');
+      try {
+        const resp = await fetch(`${BACKEND_URL}/api/leads`);
+        if (resp.ok) {
+          badge.className = 'text-emerald-400 font-medium';
+          badge.textContent = 'Conectado (Render)';
+          adicionarLog('SUCCESS', 'Servidor pronto!');
+        } else { throw new Error(); }
+      } catch (e) {
+        badge.className = 'text-amber-400 font-medium';
+        badge.textContent = 'Acordando servidor...';
+        setTimeout(testarConexao, 4000);
+      }
+    }
+
+    testarConexao();
+    historico.push({ sender: 'agent', text: 'Olá! Sou o consultor da Nascimento Solutions. Como posso ajudar com nossos serviços de sistemas web e automações com IA?' });
+    renderizarChat();
+  </script>
+</body>
+</html>
