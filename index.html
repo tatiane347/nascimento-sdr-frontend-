@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,55 +10,82 @@
     body { font-family: 'Inter', sans-serif; }
     .chat-scroll::-webkit-scrollbar { width: 5px; }
     .chat-scroll::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 3px; }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    .typing-dot { animation: pulse-dot 1.4s infinite ease-in-out; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
 
+  <!-- Header Principal -->
   <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg">NS</div>
+      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">NS</div>
       <div>
         <h1 class="font-bold text-white text-sm sm:text-base">Nascimento Solutions • Suíte IA</h1>
-        <p class="text-xs text-slate-400">Status: <span id="status-backend" class="text-amber-400 font-medium">Conectando ao Render...</span></p>
+        <p class="text-xs text-slate-400">Backend: <span id="status-backend" class="text-amber-400 font-medium">Conectando ao Render...</span></p>
       </div>
     </div>
     <div class="flex gap-2">
-      <button onclick="mudarAba('chat')" id="tab-chat" class="text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white">Chat SDR</button>
+      <button onclick="mudarAba('chat')" id="tab-chat" class="text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md">Chat SDR</button>
       <button onclick="mudarAba('crm')" id="tab-crm" class="text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Pipeline CRM</button>
     </div>
   </header>
 
-  <!-- CHAT -->
+  <!-- ABAS: CHAT SDR -->
   <main id="view-chat" class="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-65px)]">
+    <!-- Esquerda: Conversa -->
     <div class="flex-1 flex flex-col bg-slate-950 border-r border-slate-800">
       <div id="chat-messages" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 chat-scroll"></div>
       
+      <!-- Sugestões Rápidas -->
+      <div id="quick-replies" class="px-4 py-2 bg-slate-900/50 border-t border-slate-800/60 flex gap-2 overflow-x-auto">
+        <button onclick="enviarMensagemRapida('Olá, quero saber mais sobre sistemas web')" class="text-xs whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-full transition">💻 Sistemas Web</button>
+        <button onclick="enviarMensagemRapida('Como funcionam as automações com IA?')" class="text-xs whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-full transition">🤖 Automações com IA</button>
+        <button onclick="enviarMensagemRapida('Quero agendar um diagnóstico técnico')" class="text-xs whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-full transition">📅 Agendar Reunião</button>
+      </div>
+
       <form id="chat-form" onsubmit="enviarMensagem(event)" class="p-4 bg-slate-900 border-t border-slate-800 flex gap-3">
-        <input type="text" id="user-input" placeholder="Pergunte sobre sistemas, automações ou IA..." class="flex-1 bg-slate-800 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-indigo-500" autocomplete="off">
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-3 rounded-xl transition">Enviar</button>
+        <input type="text" id="user-input" placeholder="Pergunte sobre sistemas, automações..." class="flex-1 bg-slate-800 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-indigo-500" autocomplete="off">
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-indigo-600/20">Enviar</button>
       </form>
     </div>
 
-    <!-- TELEMETRIA -->
+    <!-- Direita: Telemetria & CRM em Tempo Real -->
     <div class="w-full lg:w-[380px] bg-slate-900 p-5 flex flex-col gap-4 overflow-y-auto">
-      <h2 class="text-sm font-bold text-white uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
-      <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-4 space-y-2 text-xs">
-        <div class="flex justify-between"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">—</span></div>
-        <div class="flex justify-between"><span class="text-slate-400">Contato:</span><span id="crm-contato" class="font-medium text-emerald-400">—</span></div>
-        <div class="flex justify-between"><span class="text-slate-400">Objetivo:</span><span id="crm-objetivo" class="font-medium text-white text-right max-w-[170px]">—</span></div>
+      <h2 class="text-xs font-bold text-white uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
+      
+      <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-4 space-y-2.5 text-xs">
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">—</span></div>
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Contato:</span><span id="crm-contato" class="font-medium text-emerald-400">—</span></div>
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Objetivo:</span><span id="crm-objetivo" class="font-medium text-white text-right max-w-[170px]">—</span></div>
         <div class="flex justify-between"><span class="text-slate-400">Urgência:</span><span id="crm-urgencia" class="font-medium text-white">—</span></div>
       </div>
-      <div class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto" id="tool-logs">
+
+      <div class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto flex flex-col min-h-[160px]" id="tool-logs">
         <div class="text-slate-500">[SYSTEM] Inicializado.</div>
       </div>
     </div>
   </main>
 
-  <!-- CRM KANBAN -->
+  <!-- ABAS: PIPELINE CRM KANBAN -->
   <main id="view-crm" class="hidden flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4"><h3 class="font-semibold text-sm text-slate-300 mb-3">Em Triagem</h3><div id="col-novos" class="space-y-2"></div></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4"><h3 class="font-semibold text-sm text-amber-300 mb-3">Nutrição</h3><div id="col-nutricao" class="space-y-2"></div></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4"><h3 class="font-semibold text-sm text-emerald-300 mb-3">Reunião Agendada</h3><div id="col-agendados" class="space-y-2"></div></div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
+      <h3 class="font-semibold text-sm text-slate-300 mb-3 flex items-center justify-between">Em Triagem <span id="count-novos" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span></h3>
+      <div id="col-novos" class="space-y-3 flex-1 overflow-y-auto"></div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
+      <h3 class="font-semibold text-sm text-amber-300 mb-3 flex items-center justify-between">Nutrição <span id="count-nutricao" class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">0</span></h3>
+      <div id="col-nutricao" class="space-y-3 flex-1 overflow-y-auto"></div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
+      <h3 class="font-semibold text-sm text-emerald-300 mb-3 flex items-center justify-between">Reunião Agendada <span id="count-agendados" class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">0</span></h3>
+      <div id="col-agendados" class="space-y-3 flex-1 overflow-y-auto"></div>
+    </div>
   </main>
 
   <script>
@@ -72,16 +98,26 @@
       if (aba === 'chat') {
         document.getElementById('view-chat').classList.remove('hidden');
         document.getElementById('view-crm').classList.add('hidden');
+        document.getElementById('tab-chat').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md';
+        document.getElementById('tab-crm').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700';
       } else {
         document.getElementById('view-chat').classList.add('hidden');
         document.getElementById('view-crm').classList.remove('hidden');
+        document.getElementById('tab-crm').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md';
+        document.getElementById('tab-chat').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700';
         carregarCRM();
       }
     }
 
     function adicionarLog(tipo, msg) {
       const logs = document.getElementById('tool-logs');
-      logs.innerHTML += `<div class="text-slate-400"><strong>[${tipo}]</strong> ${msg}</div>`;
+      const hora = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+      let cor = 'text-slate-400';
+      if (tipo === 'SUCCESS') cor = 'text-emerald-400';
+      if (tipo === 'GUARDRAIL') cor = 'text-amber-400';
+      if (tipo === 'EXTRACT') cor = 'text-indigo-400';
+
+      logs.innerHTML += `<div class="${cor}"><span class="text-slate-600">[${hora}]</span> <strong>[${tipo}]</strong> ${msg}</div>`;
       logs.scrollTop = logs.scrollHeight;
     }
 
@@ -89,9 +125,37 @@
       const box = document.getElementById('chat-messages');
       box.innerHTML = '';
       historico.forEach(m => {
-        box.innerHTML += `<div class="flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}"><div class="${m.sender === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-100'} rounded-2xl px-4 py-3 max-w-[80%] text-sm">${m.text}</div></div>`;
+        const isUser = m.sender === 'user';
+        box.innerHTML += `
+          <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
+            <div class="${isUser ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-slate-800 text-slate-100 border border-slate-700/80 rounded-bl-sm'} rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed shadow-md">
+              ${m.text}
+            </div>
+          </div>
+        `;
       });
       box.scrollTop = box.scrollHeight;
+    }
+
+    function simularDigitacao() {
+      const id = 'typing-' + Date.now();
+      const box = document.getElementById('chat-messages');
+      box.innerHTML += `
+        <div id="${id}" class="flex justify-start">
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5 items-center">
+            <span class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></span>
+            <span class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></span>
+            <span class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></span>
+          </div>
+        </div>
+      `;
+      box.scrollTop = box.scrollHeight;
+      return () => { const el = document.getElementById(id); if (el) el.remove(); };
+    }
+
+    function enviarMensagemRapida(texto) {
+      document.getElementById('user-input').value = texto;
+      enviarMensagem(new Event('submit'));
     }
 
     async function enviarMensagem(e) {
@@ -104,15 +168,23 @@
       historico.push({ sender: 'user', text: texto });
       renderizarChat();
 
+      const removerDigitacao = simularDigitacao();
+
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 segundos para acordar o Render
+
         const resp = await fetch(`${BACKEND_URL}/api/agent/sdr`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId, message: texto })
+          body: JSON.stringify({ sessionId, message: texto }),
+          signal: controller.signal
         });
 
-        if (!resp.ok) throw new Error('Erro no servidor');
+        clearTimeout(timeoutId);
+        if (!resp.ok) throw new Error('Servidor retornou erro');
         const data = await resp.json();
+        removerDigitacao();
 
         if (data.leadData) {
           leadData = { ...leadData, ...data.leadData };
@@ -129,8 +201,10 @@
         renderizarChat();
 
       } catch (err) {
-        adicionarLog('GUARDRAIL', 'Tentando religar com o Render...');
-        setTimeout(() => enviarMensagem(e), 3000);
+        removerDigitacao();
+        adicionarLog('GUARDRAIL', 'Servidor no Render estava em repouso e acordou agora.');
+        historico.push({ sender: 'agent', text: 'Recebi sua mensagem! O servidor gratuito do Render entrou em modo de economia de energia e acabou de religar. Pode enviar sua pergunta novamente para conversarmos!' });
+        renderizarChat();
       }
     }
 
@@ -139,7 +213,34 @@
         const resp = await fetch(`${BACKEND_URL}/api/leads`);
         const data = await resp.json();
         const leads = data.leads || [];
-        document.getElementById('col-novos').innerHTML = leads.map(l => `<div class="bg-slate-950 p-3 rounded-lg text-xs"><b>${l.nome || 'Lead'}</b><br>${l.objetivo || ''}</div>`).join('');
+
+        let novos = '', nutricao = '', agendados = '';
+        let cN = 0, cNu = 0, cA = 0;
+
+        leads.forEach(l => {
+          const card = `
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs space-y-1.5">
+              <div class="font-semibold text-white">${l.nome || 'Lead'}</div>
+              <div class="text-slate-400">${l.objetivo || 'Projeto N/A'}</div>
+              <div class="text-emerald-400 font-mono">${l.contato || 'Sem contato'}</div>
+            </div>
+          `;
+          if (l.score >= 80 || (l.statusAgenda && l.statusAgenda.includes('Confirmada'))) {
+            agendados += card; cA++;
+          } else if (l.score >= 50) {
+            nutricao += card; cNu++;
+          } else {
+            novos += card; cN++;
+          }
+        });
+
+        document.getElementById('col-novos').innerHTML = novos || '<div class="text-slate-500 text-xs">Nenhum lead em triagem.</div>';
+        document.getElementById('col-nutricao').innerHTML = nutricao || '<div class="text-slate-500 text-xs">Nenhum lead em nutrição.</div>';
+        document.getElementById('col-agendados').innerHTML = agendados || '<div class="text-slate-500 text-xs">Nenhuma reunião agendada.</div>';
+
+        document.getElementById('count-novos').textContent = cN;
+        document.getElementById('count-nutricao').textContent = cNu;
+        document.getElementById('count-agendados').textContent = cA;
       } catch (e) {}
     }
 
@@ -150,12 +251,13 @@
         if (resp.ok) {
           badge.className = 'text-emerald-400 font-medium';
           badge.textContent = 'Conectado (Render)';
-          adicionarLog('SUCCESS', 'Servidor pronto!');
+          adicionarLog('SUCCESS', 'Conexão estabelecida com sucesso.');
         } else { throw new Error(); }
       } catch (e) {
         badge.className = 'text-amber-400 font-medium';
-        badge.textContent = 'Acordando servidor...';
-        setTimeout(testarConexao, 4000);
+        badge.textContent = 'Acordando Render...';
+        adicionarLog('GUARDRAIL', 'Aguardando o servidor no Render despertar da inatividade...');
+        setTimeout(testarConexao, 6000);
       }
     }
 
