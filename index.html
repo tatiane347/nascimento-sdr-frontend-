@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nascimento Solutions | CRM & Chat SDR Autônomo</title>
+  <title>Nascimento Solutions | CRM & Chat SDR Inteligente</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%234f46e5'/><text x='50%' y='55%' font-family='Inter, sans-serif' font-size='42' font-weight='bold' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>NS</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
       <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">NS</div>
       <div>
         <h1 class="font-bold text-white text-sm sm:text-base">Nascimento Solutions • Suíte IA</h1>
-        <p class="text-xs text-slate-400">Status: <span class="text-emerald-400 font-medium">Modo Front-end Autônomo (Ativo)</span></p>
+        <p class="text-xs text-slate-400">Status: <span class="text-emerald-400 font-medium">Assistente SDR Inteligente (Ativo)</span></p>
       </div>
     </div>
     <div class="flex gap-2">
@@ -61,14 +61,14 @@
       <h2 class="text-xs font-bold text-white uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
       
       <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-4 space-y-2.5 text-xs">
-        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">—</span></div>
-        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Contato:</span><span id="crm-contato" class="font-medium text-emerald-400">—</span></div>
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">Tatiane</span></div>
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Contato:</span><span id="crm-contato" class="font-medium text-emerald-400">Sessão Ativa</span></div>
         <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Objetivo:</span><span id="crm-objetivo" class="font-medium text-white text-right max-w-[170px]">—</span></div>
-        <div class="flex justify-between"><span class="text-slate-400">Urgência:</span><span id="crm-urgencia" class="font-medium text-white">—</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Urgência:</span><span id="crm-urgencia" class="font-medium text-white">Média</span></div>
       </div>
 
       <div class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto flex flex-col min-h-[160px]" id="tool-logs">
-        <div class="text-slate-500">[SYSTEM] Motor autônomo inicializado.</div>
+        <div class="text-slate-500">[SYSTEM] Cérebro SDR inteligente ativado.</div>
       </div>
     </div>
   </main>
@@ -79,9 +79,9 @@
       <h3 class="font-semibold text-sm text-slate-300 mb-3 flex items-center justify-between">Em Triagem <span id="count-novos" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">1</span></h3>
       <div id="col-novos" class="space-y-3 flex-1 overflow-y-auto">
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs space-y-1.5">
-          <div class="font-semibold text-white">Tatiane (Visitante)</div>
-          <div class="text-slate-400">Explorando sistemas web e automações</div>
-          <div class="text-emerald-400 font-mono">Sessão Ativa</div>
+          <div class="font-semibold text-white">Tatiane</div>
+          <div class="text-slate-400" id="crm-card-obj">Explorando projetos web e IA</div>
+          <div class="text-emerald-400 font-mono">Qualificação em andamento</div>
         </div>
       </div>
     </div>
@@ -171,28 +171,31 @@
       renderizarChat();
 
       document.getElementById('crm-objetivo').textContent = texto;
-      adicionarLog('EXTRACT', 'Interesse do lead atualizado.');
+      document.getElementById('crm-card-obj').textContent = texto;
+      adicionarLog('EXTRACT', 'Objetivo do lead atualizado.');
 
       const removerDigitacao = simularDigitacao();
 
-      // Resposta simulada inteligente para garantir funcionamento imediato e fluido sem dependências externas
       setTimeout(() => {
         removerDigitacao();
-        let reply = "Entendido! Na Nascimento Solutions desenvolvemos sistemas web sob medida e automações avançadas com IA para otimizar sua operação. Gostaria de agendar um diagnóstico técnico gratuito com nossa equipe?";
+        let reply = "Compreendo perfeitamente o seu objetivo. Na Nascimento Solutions, criamos arquiteturas robustas em sistemas web e automações inteligentes com IA sob medida para o seu negócio. Como gostaria de estruturar esse projeto?";
         
         const t = texto.toLowerCase();
-        if (t.includes('sistema') || t.includes('web')) {
-          reply = "Nossos sistemas web são desenvolvidos com arquitetura moderna e segura (alta performance, painel administrativo e integrações). Qual é o principal objetivo do seu sistema?";
-        } else if (t.includes('autom') || t.includes('ia')) {
-          reply = "Nossas automações com IA integram WhatsApp, CRM e bases de conhecimento para qualificar leads e responder clientes 24 horas por dia. Deseja ver um caso de uso prático?";
-        } else if (t.includes('agendar') || t.includes('reunião') || t.includes('diagnóstico')) {
-          reply = "Perfeito! Para agendar o seu diagnóstico técnico com a Tatiane Nascimento, por favor me informe seu melhor WhatsApp ou e-mail de contato.";
+        if (t.includes('sistema') || t.includes('web') || t.includes('site')) {
+          reply = "Nossos sistemas web são desenvolvidos com foco em alta performance, painéis administrativos intuitivos e total segurança. Qual é a principal funcionalidade que você imagina para o seu sistema?";
+        } else if (t.includes('autom') || t.includes('ia') || t.includes('inteligência')) {
+          reply = "Nossas automações com IA integram canais como WhatsApp e CRMs para qualificar leads, responder dúvidas 24 horas por dia e otimizar processos. Qual setor da sua empresa mais precisa de automação?";
+        } else if (t.includes('agendar') || t.includes('reunião') || t.includes('diagnóstico') || t.includes('sim')) {
+          reply = "Maravilha! Para garantirmos o melhor horário para o seu diagnóstico técnico gratuito com nossa equipe, por favor me informe qual o seu melhor WhatsApp de contato.";
+        } else if (t.includes('9') || t.includes('@') || t.includes('whatsapp') || t.includes('email')) {
+          reply = "Contato registrado com sucesso! 🎯 Já agendei a prioridade na nossa agenda. Nossa arquiteta técnica entrará em contato em instantes pelo número informado. Há mais alguma dúvida sobre os serviços?";
+          document.getElementById('crm-contato').textContent = texto;
         }
 
         chatHistory.push({ role: 'model', parts: [{ text: reply }] });
         renderizarChat();
-        adicionarLog('SUCCESS', 'Resposta gerada com sucesso.');
-      }, 700);
+        adicionarLog('SUCCESS', 'Resposta contextual gerada com sucesso.');
+      }, 600);
     }
 
     chatHistory.push({ role: 'model', parts: [{ text: 'Olá! Sou o consultor SDR da Nascimento Solutions. Como posso ajudar com nossos serviços de sistemas web e automações com IA?' }] });
