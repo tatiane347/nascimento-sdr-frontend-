@@ -20,25 +20,27 @@
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
-  <!-- Header Principal -->
-  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">NS</div>
-      <div>
-        <h1 class="font-bold text-white text-sm sm:text-base">Nascimento Solutions • Suíte IA</h1>
-        <p class="text-xs text-slate-400">Status: <span class="text-emerald-400 font-medium">Assistente SDR Inteligente (Ativo)</span></p>
+  <!-- Header Principal (Totalmente Responsivo) -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 sticky top-0 z-40">
+    <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">NS</div>
+        <div>
+          <h1 class="font-bold text-white text-sm sm:text-base">Nascimento Solutions • Suíte IA</h1>
+          <p class="text-xs text-slate-400">Status: <span class="text-emerald-400 font-medium">Assistente SDR Inteligente (Ativo)</span></p>
+        </div>
       </div>
     </div>
-    <div class="flex gap-2">
-      <button onclick="mudarAba('chat')" id="tab-chat" class="text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md">Chat SDR</button>
-      <button onclick="mudarAba('crm')" id="tab-crm" class="text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Pipeline CRM</button>
+    <div class="flex gap-2 w-full sm:w-auto justify-end">
+      <button onclick="mudarAba('chat')" id="tab-chat" class="flex-1 sm:flex-initial text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md transition">Chat SDR</button>
+      <button onclick="mudarAba('crm')" id="tab-crm" class="flex-1 sm:flex-initial text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 transition">Pipeline CRM</button>
     </div>
   </header>
 
   <!-- ABAS: CHAT SDR -->
-  <main id="view-chat" class="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-65px)]">
+  <main id="view-chat" class="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-65px)] sm:h-[calc(100vh-69px)]">
     <!-- Esquerda: Conversa -->
     <div class="flex-1 flex flex-col bg-slate-950 border-r border-slate-800">
       <div id="chat-messages" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 chat-scroll"></div>
@@ -50,14 +52,14 @@
         <button onclick="enviarMensagemRapida('Quero agendar um diagnóstico técnico')" class="text-xs whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-full transition">📅 Agendar Reunião</button>
       </div>
 
-      <form id="chat-form" onsubmit="enviarMensagem(event)" class="p-4 bg-slate-900 border-t border-slate-800 flex gap-3">
+      <form id="chat-form" onsubmit="enviarMensagem(event)" class="p-3 sm:p-4 bg-slate-900 border-t border-slate-800 flex gap-3">
         <input type="text" id="user-input" placeholder="Digite sua mensagem aqui..." class="flex-1 bg-slate-800 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-indigo-500" autocomplete="off">
         <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-indigo-600/20">Enviar</button>
       </form>
     </div>
 
-    <!-- Direita: Telemetria & CRM em Tempo Real -->
-    <div class="w-full lg:w-[380px] bg-slate-900 p-5 flex flex-col gap-4 overflow-y-auto">
+    <!-- Direita: Telemetria & CRM em Tempo Real (Oculto em telas muito pequenas se necessário, adaptável via grid) -->
+    <div class="w-full lg:w-[380px] bg-slate-900 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto">
       <h2 class="text-xs font-bold text-white uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
       
       <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-4 space-y-2.5 text-xs">
@@ -67,14 +69,14 @@
         <div class="flex justify-between"><span class="text-slate-400">Urgência:</span><span id="crm-urgencia" class="font-medium text-white">Média</span></div>
       </div>
 
-      <div class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto flex flex-col min-h-[160px]" id="tool-logs">
+      <div class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto flex flex-col min-h-[140px] lg:min-h-[160px]" id="tool-logs">
         <div class="text-slate-500">[SYSTEM] Cérebro SDR inteligente ativado.</div>
       </div>
     </div>
   </main>
 
-  <!-- ABAS: PIPELINE CRM KANBAN -->
-  <main id="view-crm" class="hidden flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto">
+  <!-- ABAS: PIPELINE CRM KANBAN (Responsivo para Tablet/Desktop) -->
+  <main id="view-crm" class="hidden flex-1 p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
       <h3 class="font-semibold text-sm text-slate-300 mb-3 flex items-center justify-between">Em Triagem <span id="count-novos" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">1</span></h3>
       <div id="col-novos" class="space-y-3 flex-1 overflow-y-auto">
@@ -89,11 +91,29 @@
       <h3 class="font-semibold text-sm text-amber-300 mb-3 flex items-center justify-between">Nutrição <span id="count-nutricao" class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">0</span></h3>
       <div id="col-nutricao" class="space-y-3 flex-1 overflow-y-auto"><div class="text-slate-500 text-xs">Nenhum lead em nutrição.</div></div>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:col-span-2 lg:col-span-1">
       <h3 class="font-semibold text-sm text-emerald-300 mb-3 flex items-center justify-between">Reunião Agendada <span id="count-agendados" class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">0</span></h3>
       <div id="col-agendados" class="space-y-3 flex-1 overflow-y-auto"><div class="text-slate-500 text-xs">Nenhuma reunião agendada.</div></div>
     </div>
   </main>
+
+  <!-- Botão Flutuante de WhatsApp com Balão de Mensagem -->
+  <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+    <!-- Balão de Recado -->
+    <div class="hidden sm:flex bg-slate-900 border border-slate-700 text-slate-100 text-xs px-3.5 py-2.5 rounded-2xl shadow-xl items-center gap-2 animate-bounce">
+      <span>👋 Olá! Fale conosco diretamente no WhatsApp.</span>
+    </div>
+    <!-- Ícone WhatsApp -->
+    <a href="https://wa.me/5511910526709?text=Olá%20Tatiane,%20gostaria%20de%20saber%20mais%20sobre%20os%20serviços%20da%20Nascimento%20Solutions." 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full flex items-center justify-center shadow-2xl shadow-emerald-500/40 transition transform hover:scale-105 active:scale-95"
+       title="Fale conosco no WhatsApp">
+      <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+      </svg>
+    </a>
+  </div>
 
   <script>
     let chatHistory = [];
@@ -102,13 +122,13 @@
       if (aba === 'chat') {
         document.getElementById('view-chat').classList.remove('hidden');
         document.getElementById('view-crm').classList.add('hidden');
-        document.getElementById('tab-chat').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md';
-        document.getElementById('tab-crm').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700';
+        document.getElementById('tab-chat').className = 'flex-1 sm:flex-initial text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md transition';
+        document.getElementById('tab-crm').className = 'flex-1 sm:flex-initial text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 transition';
       } else {
         document.getElementById('view-chat').classList.add('hidden');
         document.getElementById('view-crm').classList.remove('hidden');
-        document.getElementById('tab-crm').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md';
-        document.getElementById('tab-chat').className = 'text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700';
+        document.getElementById('tab-crm').className = 'flex-1 sm:flex-initial text-xs font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white shadow-md transition';
+        document.getElementById('tab-chat').className = 'flex-1 sm:flex-initial text-xs font-medium px-4 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 transition';
       }
     }
 
