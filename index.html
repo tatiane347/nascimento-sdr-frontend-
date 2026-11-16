@@ -20,9 +20,14 @@
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+<body id="topo" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
-  <!-- Header Principal -->
+  <!-- Barra Superior de Assinatura -->
+  <div class="bg-slate-950 border-b border-slate-800/80 px-4 py-1.5 text-center text-[11px] sm:text-xs text-slate-400">
+    Criado por <span class="text-pink-400 font-medium">Tatiane</span>, Grupo Nascimento Solutions
+  </div>
+
+  <!-- Header Principal (Totalmente Responsivo) -->
   <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 sticky top-0 z-40">
     <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
       <div class="flex items-center gap-3">
@@ -40,9 +45,9 @@
   </header>
 
   <!-- ABAS: CHAT SDR -->
-  <main id="view-chat" class="flex-1 flex flex-col lg:flex-row lg:overflow-hidden min-h-[calc(100vh-110px)] lg:h-[calc(100vh-69px)]">
+  <main id="view-chat" class="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-[calc(100vh-140px)]">
     <!-- Esquerda: Conversa -->
-    <div class="flex-1 flex flex-col bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-800 min-h-[55vh] lg:min-h-0">
+    <div class="flex-1 flex flex-col bg-slate-950 border-r border-slate-800">
       <div id="chat-messages" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 chat-scroll"></div>
       
       <!-- Sugestões Rápidas -->
@@ -58,14 +63,14 @@
       </form>
     </div>
 
-    <!-- Direita: Telemetria & CRM em Tempo Real -->
-    <div class="w-full lg:w-[380px] bg-slate-900 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto pb-24 lg:pb-5">
-      <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
+    <!-- Direita: Telemetria & CRM em Tempo Real (Oculto em telas muito pequenas se necessário, adaptável via grid) -->
+    <div class="w-full lg:w-[380px] bg-slate-900 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto">
+      <h2 class="text-xs font-bold text-white uppercase tracking-wider text-indigo-400">Telemetria & CRM</h2>
       
       <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-4 space-y-2.5 text-xs">
-        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">Visitante</span></div>
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Nome:</span><span id="crm-nome" class="font-medium text-white">Tatiane</span></div>
         <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Contato:</span><span id="crm-contato" class="font-medium text-emerald-400">Sessão Ativa</span></div>
-        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Objetivo:</span><span id="crm-objetivo" class="font-medium text-white text-right max-w-[170px] truncate">—</span></div>
+        <div class="flex justify-between border-b border-slate-700/50 pb-1.5"><span class="text-slate-400">Objetivo:</span><span id="crm-objetivo" class="font-medium text-white text-right max-w-[170px]">—</span></div>
         <div class="flex justify-between"><span class="text-slate-400">Urgência:</span><span id="crm-urgencia" class="font-medium text-white">Média</span></div>
       </div>
 
@@ -75,36 +80,50 @@
     </div>
   </main>
 
-  <!-- ABAS: PIPELINE CRM KANBAN -->
-  <main id="view-crm" class="hidden flex-1 p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto pb-24">
+  <!-- ABAS: PIPELINE CRM KANBAN (Responsivo para Tablet/Desktop) -->
+  <main id="view-crm" class="hidden flex-1 p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
       <h3 class="font-semibold text-sm text-slate-300 mb-3 flex items-center justify-between">Em Triagem <span id="count-novos" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">1</span></h3>
       <div id="col-novos" class="space-y-3 flex-1 overflow-y-auto">
-        <div id="lead-card" class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs space-y-2 transition-all">
-          <div class="flex items-center justify-between">
-            <span class="font-semibold text-white" id="crm-card-nome">Visitante</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300" id="crm-card-badge">Novo</span>
-          </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs space-y-1.5">
+          <div class="font-semibold text-white">Tatiane</div>
           <div class="text-slate-400" id="crm-card-obj">Explorando projetos web e IA</div>
-          <div class="text-emerald-400 font-mono text-[11px]" id="crm-card-status">Qualificação em andamento</div>
+          <div class="text-emerald-400 font-mono">Qualificação em andamento</div>
         </div>
       </div>
     </div>
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col">
       <h3 class="font-semibold text-sm text-amber-300 mb-3 flex items-center justify-between">Nutrição <span id="count-nutricao" class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">0</span></h3>
-      <div id="col-nutricao" class="space-y-3 flex-1 overflow-y-auto"><div id="empty-nutricao" class="text-slate-500 text-xs">Nenhum lead em nutrição.</div></div>
+      <div id="col-nutricao" class="space-y-3 flex-1 overflow-y-auto"><div class="text-slate-500 text-xs">Nenhum lead em nutrição.</div></div>
     </div>
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:col-span-2 lg:col-span-1">
       <h3 class="font-semibold text-sm text-emerald-300 mb-3 flex items-center justify-between">Reunião Agendada <span id="count-agendados" class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">0</span></h3>
-      <div id="col-agendados" class="space-y-3 flex-1 overflow-y-auto"><div id="empty-agendados" class="text-slate-500 text-xs">Nenhuma reunião agendada.</div></div>
+      <div id="col-agendados" class="space-y-3 flex-1 overflow-y-auto"><div class="text-slate-500 text-xs">Nenhuma reunião agendada.</div></div>
     </div>
   </main>
 
-  <!-- Botão Flutuante de WhatsApp -->
-  <div class="fixed bottom-5 right-5 z-50 flex items-center gap-3">
+  <!-- Rodapé com Assinatura e Seta Rosinha -->
+  <footer class="border-t border-slate-800 bg-slate-900/95 px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+    <p class="text-center sm:text-left">
+      Criado por <span class="text-pink-400 font-semibold">Tatiane</span>, Grupo Nascimento Solutions
+    </p>
+    <a href="#topo" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" 
+       class="inline-flex items-center gap-1.5 bg-pink-500/15 hover:bg-pink-500/25 text-pink-400 border border-pink-500/30 px-3.5 py-2 rounded-full font-medium transition transform hover:-translate-y-0.5 shadow-sm"
+       title="Voltar ao topo">
+      <span>Voltar ao topo</span>
+      <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+      </svg>
+    </a>
+  </footer>
+
+  <!-- Botão Flutuante de WhatsApp com Balão de Mensagem -->
+  <div class="fixed bottom-20 sm:bottom-16 right-6 z-50 flex items-center gap-3">
+    <!-- Balão de Recado -->
     <div class="hidden sm:flex bg-slate-900 border border-slate-700 text-slate-100 text-xs px-3.5 py-2.5 rounded-2xl shadow-xl items-center gap-2 animate-bounce">
       <span>👋 Olá! Fale conosco diretamente no WhatsApp.</span>
     </div>
+    <!-- Ícone WhatsApp -->
     <a href="https://wa.me/5511910526709?text=Olá%20Tatiane,%20gostaria%20de%20saber%20mais%20sobre%20os%20serviços%20da%20Nascimento%20Solutions." 
        target="_blank" 
        rel="noopener noreferrer"
@@ -118,11 +137,6 @@
 
   <script>
     let chatHistory = [];
-    let estagioAtual = 'novos';
-
-    function escaparHTML(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
 
     function mudarAba(aba) {
       if (aba === 'chat') {
@@ -138,52 +152,12 @@
       }
     }
 
-    function moverCardKanban(destino, statusTexto, badgeTexto, urgenciaTexto) {
-      if (estagioAtual === destino) return;
-      if (estagioAtual === 'agendados' && destino === 'nutricao') return;
-
-      const card = document.getElementById('lead-card');
-      const colNovos = document.getElementById('col-novos');
-      const colNutricao = document.getElementById('col-nutricao');
-      const colAgendados = document.getElementById('col-agendados');
-
-      document.getElementById('crm-card-status').textContent = statusTexto;
-      document.getElementById('crm-card-badge').textContent = badgeTexto;
-      if (urgenciaTexto) document.getElementById('crm-urgencia').textContent = urgenciaTexto;
-
-      if (destino === 'nutricao') {
-        const emptyNut = document.getElementById('empty-nutricao');
-        if (emptyNut) emptyNut.remove();
-        colNutricao.appendChild(card);
-        colNovos.innerHTML = '<div class="text-slate-500 text-xs">Nenhum lead em triagem.</div>';
-        document.getElementById('count-novos').textContent = '0';
-        document.getElementById('count-nutricao').textContent = '1';
-      } else if (destino === 'agendados') {
-        const emptyAg = document.getElementById('empty-agendados');
-        if (emptyAg) emptyAg.remove();
-        colAgendados.appendChild(card);
-        if (estagioAtual === 'novos') {
-          colNovos.innerHTML = '<div class="text-slate-500 text-xs">Nenhum lead em triagem.</div>';
-          document.getElementById('count-novos').textContent = '0';
-        } else if (estagioAtual === 'nutricao') {
-          colNutricao.innerHTML = '<div id="empty-nutricao" class="text-slate-500 text-xs">Nenhum lead em nutrição.</div>';
-          document.getElementById('count-nutricao').textContent = '0';
-        }
-        document.getElementById('count-agendados').textContent = '1';
-        document.getElementById('crm-card-badge').className = 'text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300';
-      }
-
-      estagioAtual = destino;
-      adicionarLog('CRM', `Lead movido para coluna: ${destino.toUpperCase()}`);
-    }
-
     function adicionarLog(tipo, msg) {
       const logs = document.getElementById('tool-logs');
       const hora = new Date().toLocaleTimeString('pt-BR', { hour12: false });
       let cor = 'text-slate-400';
       if (tipo === 'SUCCESS') cor = 'text-emerald-400';
       if (tipo === 'EXTRACT') cor = 'text-indigo-400';
-      if (tipo === 'CRM') cor = 'text-amber-400';
 
       logs.innerHTML += `<div class="${cor}"><span class="text-slate-600">[${hora}]</span> <strong>[${tipo}]</strong> ${msg}</div>`;
       logs.scrollTop = logs.scrollHeight;
@@ -194,11 +168,10 @@
       box.innerHTML = '';
       chatHistory.forEach(m => {
         const isUser = m.role === 'user';
-        const textoSeguro = escaparHTML(m.parts[0].text).replace(/\n/g, '<br>');
         box.innerHTML += `
           <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
             <div class="${isUser ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-slate-800 text-slate-100 border border-slate-700/80 rounded-bl-sm'} rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed shadow-md">
-              ${textoSeguro}
+              ${m.parts[0].text.replace(/\n/g, '<br>')}
             </div>
           </div>
         `;
@@ -241,35 +214,22 @@
       document.getElementById('crm-card-obj').textContent = texto;
       adicionarLog('EXTRACT', 'Objetivo do lead atualizado.');
 
-      // Captura simples de nome caso o visitante se apresente
-      const matchNome = texto.match(/(?:meu nome é|me chamo|sou o|sou a)\s+([A-Za-zÀ-ÿ]+)/i);
-      if (matchNome && matchNome[1]) {
-        const nomeCapturado = matchNome[1].charAt(0).toUpperCase() + matchNome[1].slice(1);
-        document.getElementById('crm-nome').textContent = nomeCapturado;
-        document.getElementById('crm-card-nome').textContent = nomeCapturado;
-        adicionarLog('EXTRACT', `Nome identificado: ${nomeCapturado}`);
-      }
-
       const removerDigitacao = simularDigitacao();
 
       setTimeout(() => {
         removerDigitacao();
-        let reply = "Compreendo perfeitamente o seu objetivo. Na Nascimento Solutions, criamos arquiteturas front-end de alta conversão e soluções inteligentes sob medida para o seu negócio. Como gostaria de estruturar esse projeto?";
+        let reply = "Compreendo perfeitamente o seu objetivo. Na Nascimento Solutions, criamos arquiteturas robustas em sistemas web e automações inteligentes com IA sob medida para o seu negócio. Como gostaria de estruturar esse projeto?";
         
         const t = texto.toLowerCase();
         if (t.includes('sistema') || t.includes('web') || t.includes('site')) {
-          reply = "Nossos sistemas e interfaces web são desenvolvidos com foco em alta performance, design responsivo e experiência do usuário. Qual é o principal objetivo da página ou sistema que você deseja criar?";
-          moverCardKanban('nutricao', 'Interesse em Sistemas Web', 'Qualificado', 'Média');
+          reply = "Nossos sistemas web são desenvolvidos com foco em alta performance, painéis administrativos intuitivos e total segurança. Qual é a principal funcionalidade que você imagina para o seu sistema?";
         } else if (t.includes('autom') || t.includes('ia') || t.includes('inteligência')) {
-          reply = "Nossas soluções com IA integram atendimento inteligente e CRMs para qualificar leads 24 horas por dia. Qual setor da sua empresa você gostaria de otimizar primeiro?";
-          moverCardKanban('nutricao', 'Interesse em IA & Automação', 'Qualificado', 'Média');
+          reply = "Nossas automações com IA integram canais como WhatsApp e CRMs para qualificar leads, responder dúvidas 24 horas por dia e otimizar processos. Qual setor da sua empresa mais precisa de automação?";
         } else if (t.includes('agendar') || t.includes('reunião') || t.includes('diagnóstico') || t.includes('sim')) {
-          reply = "Maravilha! Para garantirmos o melhor horário para o seu diagnóstico técnico gratuito, por favor me informe qual o seu melhor WhatsApp ou e-mail de contato.";
-          moverCardKanban('nutricao', 'Solicitou diagnóstico', 'Quente', 'Alta');
+          reply = "Maravilha! Para garantirmos o melhor horário para o seu diagnóstico técnico gratuito com nossa equipe, por favor me informe qual o seu melhor WhatsApp de contato.";
         } else if (t.includes('9') || t.includes('@') || t.includes('whatsapp') || t.includes('email')) {
-          reply = "Contato registrado com sucesso! 🎯 Já movi seu atendimento para prioridade na nossa agenda. Nossa arquiteta entrará em contato em instantes pelo canal informado. Há mais alguma dúvida?";
+          reply = "Contato registrado com sucesso! 🎯 Já agendei a prioridade na nossa agenda. Nossa arquiteta técnica entrará em contato em instantes pelo número informado. Há mais alguma dúvida sobre os serviços?";
           document.getElementById('crm-contato').textContent = texto;
-          moverCardKanban('agendados', `Contato: ${texto}`, 'Agendado', 'Alta');
         }
 
         chatHistory.push({ role: 'model', parts: [{ text: reply }] });
@@ -278,7 +238,7 @@
       }, 600);
     }
 
-    chatHistory.push({ role: 'model', parts: [{ text: 'Olá! Sou o consultor SDR da Nascimento Solutions. Como posso ajudar com nossos serviços de interfaces web e soluções digitais?' }] });
+    chatHistory.push({ role: 'model', parts: [{ text: 'Olá! Sou o consultor SDR da Nascimento Solutions. Como posso ajudar com nossos serviços de sistemas web e automações com IA?' }] });
     renderizarChat();
   </script>
 </body>
