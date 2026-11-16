@@ -11,7 +11,7 @@ Interface web e painel CRM do Agente SDR Inteligente da Nascimento Solutions (Ge
 
 ​Interface web moderna, interativa e 100% responsiva que combina um Assistente Virtual Comercial (SDR) com um Painel de Gestão de Leads (Pipeline CRM Kanban) e integração direta com WhatsApp.
 
-​🔗 Acesse o projeto ao vivo: nascimento-sdr-frontend-three.vercel.app
+​🔗 Acesse o projeto ao vivo: https://nascimento-sdr-frontend-three.vercel.app/
 
 ​✨ Principais Funcionalidades ​💬 Chat SDR Inteligente: Atendimento automatizado que qualifica o interesse do visitante em tempo real com sugestões rápidas de interação. ​📊 Telemetria & CRM em Tempo Real: Extração automática dos dados e objetivos do lead durante a conversa. ​🗂️ Pipeline CRM Kanban: Visualização organizada dos leads em etapas (Em Triagem, Nutrição e Reunião Agendada). ​📱 Botão Flutuante de WhatsApp: Redirecionamento direto com mensagem pré-configurada para conversão imediata. ​💻 100% Responsivo: Adaptado perfeitamente para celulares (Android/iOS), tablets, notebooks e desktops. ​🛠️ Tecnologias Utilizadas ​HTML5 & JavaScript (ES6+) ​Tailwind CSS (Estilização moderna e responsividade) ​Vercel (Hospedagem e Deploy contínuo) ​👩‍💻 Autoria & Contato 
 
